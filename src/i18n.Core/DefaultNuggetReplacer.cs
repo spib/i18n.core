@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using i18n.Core.Abstractions;
+using i18n.Core.Abstractions.Domain;
 using i18n.Core.Pot.Helpers;
 using JetBrains.Annotations;
 
@@ -14,13 +15,13 @@ namespace i18n.Core
 
     public class DefaultNuggetReplacer : INuggetReplacer
     {
-        static readonly Regex NuggetRegex;
+        readonly Regex NuggetRegex;
 
         // https://github.com/turquoiseowl/i18n/blob/ce7bdc9d8a8b92022c42417edeff4fb9ce8d3170/src/i18n.Domain/Helpers/NuggetParser.cs#L149
 
-        static DefaultNuggetReplacer()
+        public DefaultNuggetReplacer(I18NLocalizationOptions options)
         {
-            var nuggetTokens = new NuggetTokens("[[[", "]]]", "|||", "///");
+            var nuggetTokens = new NuggetTokens( options.NuggetBeginToken, options.NuggetEndToken, options.NuggetDelimiterToken, options.NuggetCommentToken);
 
             const NuggetParser.Context context = NuggetParser.Context.ResponseProcessing;
             const RegexOptions regexOptions = RegexOptions.CultureInvariant

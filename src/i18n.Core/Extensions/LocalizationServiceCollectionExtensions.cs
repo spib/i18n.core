@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -36,7 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var defaultPooledStreamManager = new DefaultPooledStreamManager();
 
-            services.AddSingleton<INuggetReplacer, DefaultNuggetReplacer>();
+            services.AddSingleton<INuggetReplacer>( x => new DefaultNuggetReplacer(x.GetService<IOptions<I18NLocalizationOptions>>().Value) );
             services.AddSingleton<IPluralRuleProvider, DefaultPluralRuleProvider>();
             services.AddSingleton<ITranslationProvider, PortableObjectFilesTranslationsProvider>();
             services.AddSingleton<ILocalizationFileLocationProvider, ContentRootPoFileLocationProvider>();
@@ -69,8 +70,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 });
             }
 
-            services.AddSingleton(x =>
-                Options.Options.Create(new I18NLocalizationOptions(x.GetRequiredService<ISettingsProvider>())));
+            services.AddSingleton( x =>
+                Options.Options.Create( new I18NLocalizationOptions( x.GetRequiredService<ISettingsProvider>() ) ) );
 
             return services;
         }

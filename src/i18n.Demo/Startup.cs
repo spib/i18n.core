@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using i18n.Core.Abstractions.Domain;
 using i18n.Core.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -65,6 +66,8 @@ namespace i18n.Demo
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            ((SettingsProvider)app.ApplicationServices.GetService<ISettingsProvider>()).PopulateFromWebConfig("web.config");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
